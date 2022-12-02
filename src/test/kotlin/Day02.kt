@@ -11,7 +11,7 @@ class TestDay02 {
     )
     @Test
     fun part1() {
-        Assert.assertEquals("24000", day02.part1())
-        Assert.assertEquals("45000", day02.part2())
+        Assert.assertEquals("15", day02.part1())
+        Assert.assertEquals("12", day02.part2())
     }
 }
