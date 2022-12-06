@@ -1,38 +1,44 @@
+import org.junit.Assert
+import org.junit.Test
 import java.security.InvalidParameterException
 
-class Day02(private val input: List<String>) {
-
-    private fun String.toValue(): Int {
-        when (this) {
-            "X","C" -> return 0
-            "Y","B" -> return 1
-            "Z","A" -> return 2
-        }
-        throw InvalidParameterException()
+private fun String.toValue(): Int {
+    when (this) {
+        "X","A" -> return 0
+        "Y","B" -> return 1
+        "Z","C" -> return 2
     }
-
-    fun part1(): String {
-        return input.map {
-            it
-                .split(" ")
-                .map { it.toValue() }
-                .let { it[0] to it[1] } }
-            .sumOf { (6 + (it.second * 4) + it.first * 3) % 9 + 1 }
-            .toString()
-    }
-
-    fun part2(): String {
-        return "2"
-    }
+    throw InvalidParameterException()
 }
 
+fun part1(input: List<Pair<Int,Int>>) =
+    input
+        .sumOf { ((it.second + 4 - it.first) % 3) * 3 + it.second + 1 }
+fun part2(input: List<Pair<Int,Int>>) =
+    input
+        .sumOf { ((it.second + 2 + it.first) % 3) + it.second * 3 + 1 }
+
 fun main() {
-    val lines = Day02::class.java.getResource("Day02.txt")?.readText()?.lines()
+    val input =object {}.javaClass.getResource("Day02.txt")
+        ?.readText()
+        ?.lines()
+        ?.map {
+            it.split(" ")
+            .map { it.toValue() }
+            .let { it[0] to it[1] } }
 
-    check(lines != null)
+    check(input != null)
 
-    val day = Day02(lines)
+    println("Part 1: ${part1(input)}")
+    println("Part 2: ${part2(input)}")
+}
 
-    println("Part 1: ${day.part1()}")
-    //println("Part 2: ${day.part2()}")
+class TestDay02 {
+    @Test
+    fun test() {
+        val input = listOf(0 to 1, 1 to 0, 2 to 2)
+
+        Assert.assertEquals(15, part1(input))
+        Assert.assertEquals(12, part2(input))
+    }
 }
