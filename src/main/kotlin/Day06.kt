@@ -1,4 +1,3 @@
-
 import org.junit.Assert
 import org.junit.Test
 
@@ -19,8 +18,8 @@ class Day06 {
 
             check(input != null)
 
-            println("Day04 Part 1: ${part1(input)}")
-            println("Day04 Part 2: ${part2(input)}")
+            println("Day06 Part 1: ${part1(input)}")
+            println("Day06 Part 2: ${part2(input)}")
         }
     }
 }

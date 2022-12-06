@@ -1,4 +1,3 @@
-
 import org.junit.Assert
 import org.junit.Test
 
@@ -17,8 +16,9 @@ class Day05 {
 
         fun part2(input: Pair<List<ArrayDeque<Char>>, List<Triple<Int, Int, Int>>>) : String {
             input.second.forEach { action ->
-                (0 until action.first).forEach {
-                    val item = input.first[action.second - 1].removeLast()
+                (0 until action.first).sortedDescending().forEach {
+                    val source =input.first[action.second - 1]
+                    val item = source.removeAt(source.count() - it - 1)
                     input.first[action.third - 1].addLast(item)
                 }
             }
@@ -69,8 +69,8 @@ class Day05 {
 
             check(input != null)
 
-            println("Day04 Part 1: ${part1(parse(input))}")
-            //println("Day04 Part 2: ${part2(input)}")
+            println("Day05 Part 1: ${part1(parse(input))}")
+            println("Day05 Part 2: ${part2(parse(input))}")
         }
     }
 }
