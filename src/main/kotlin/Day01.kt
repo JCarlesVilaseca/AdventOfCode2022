@@ -1,31 +1,40 @@
-class Day01(private val input: String) {
-    private fun sum(n: Int): Int {
-        return input
-            .split("\r\n\r\n")
-            .map { it.split("\r\n").map { it.toInt() } }
-            .map { it.sum() }
-            .sortedDescending()
-            .take(n)
-            .sum()
-    }
+import kotlin.reflect.KClass
 
-    fun part1(): String {
-        return sum(1).toString()
-    }
+private fun part1(input: Iterable<Iterable<Int>>) =
+    input
+        .map { it.sum() }
+        .sortedDescending()
+        .take(1)
+        .sum()
 
-    fun part2(): String {
-        return sum(3)
-            .toString()
-    }
-}
+private fun part2(input: Iterable<Iterable<Int>>) =
+    input
+        .map { it.sum() }
+        .sortedDescending()
+        .take(1)
+        .sum()
 
 fun main() {
-    val fileContent = Day01::class.java.getResource("Day01.txt")?.readText()
+    val testInput = listOf(
+        listOf(1000, 2000, 3000),
+        listOf(4000),
+        listOf(5000, 6000),
+        listOf(7000, 8000, 9000),
+        listOf(10000))
 
-    check(fileContent != null)
+    check(part1(testInput) == 24000)
 
-    val day = Day01(fileContent)
+    val input = Day02::class.java.getResource("Day01.txt")
+        ?.readText()
+        ?.split("\r\n\r\n")
+        ?.map { it.split("\r\n").map { it.toInt() } }
 
-    println("Part 1: ${day.part1()}")
-    println("Part 2: ${day.part2()}")
+
+    check(input != null)
+
+    println("Part 1: ${part1(input)}")
+
+    check(part2(testInput) == 45000)
+
+    println("Part 2: ${part2(input)}")
 }

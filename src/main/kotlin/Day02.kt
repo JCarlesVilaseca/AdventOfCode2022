@@ -27,7 +27,7 @@ class Day02(private val input: List<String>) {
 }
 
 fun main() {
-    val lines = Day01::class.java.getResource("Day02.txt")?.readText()?.lines()
+    val lines = Day02::class.java.getResource("Day02.txt")?.readText()?.lines()
 
     check(lines != null)
 
