@@ -2,28 +2,106 @@
 import org.junit.Assert
 import org.junit.Test
 
-open class Entry {
-
+interface Entry {
+    fun calculateSize(): Int
 }
 
-class File(size: Int): Entry() {}
-
-class Folder(parent: Folder?): Entry() {
-    var entries: Map<String, Entry> = emptyMap()
+class File(private val size: Int): Entry {
+    override fun calculateSize(): Int {
+        return size
+    }
 }
+
+class Folder(public val parent: Folder?): Entry {
+    var entries: MutableMap<String, Entry> = mutableMapOf()
+
+    override fun calculateSize(): Int {
+        return entries.values.sumOf { it.calculateSize() }
+    }
+}
+
+
+
 
 class AdventFileSystem {
-    var root = Folder(null)
-    var currentFolder: Folder = root
+    public var root = Folder(null)
+    private var currentFolder: Folder = root
+
+    fun cd(dir: String) {
+        currentFolder = when(dir) {
+            "/"  -> root
+            ".." -> {
+                check(currentFolder.parent != null)
+                currentFolder.parent!!
+            }
+
+            else -> {
+                check(currentFolder.entries.containsKey(dir) && currentFolder.entries[dir] is Folder)
+                currentFolder.entries[dir] as Folder
+            }
+        }
+    }
+
+    fun addFolder(name: String) {
+        currentFolder.entries[name] = Folder(currentFolder)
+    }
+
+    fun addFile(name: String, size: Int) {
+        currentFolder.entries[name] = File(size)
+    }
+
+    fun asSequence(): Sequence<Folder> {
+        return root.asSequence()
+    }
+
+}
+
+fun Folder.asSequence(): Sequence<Folder> = sequence {
+    yield(this@asSequence)
+    entries.values.filterIsInstance<Folder>().forEach { yieldAll(it.asSequence()) }
 }
 
 class Day07 {
     companion object {
-        fun part1(fs: AdventFileSystem, commands: List<String>) =
-            0
 
-        fun part2(fs: AdventFileSystem, commands: List<String>) =
-            0
+        fun part1(fs: AdventFileSystem, commands: List<String>): Int {
+            runCommands(fs, commands)
+
+            return fs.asSequence().map { it.calculateSize() }.filter { it < 100000 }.sum()
+        }
+
+        fun part2(fs: AdventFileSystem, commands: List<String>): Int {
+            runCommands(fs, commands)
+            val free = 70000000 - fs.root.calculateSize()
+
+            return fs.asSequence().map { it.calculateSize() }.filter { it + free > 30000000 }.sorted().first()
+        }
+
+        private fun runCommands(fs: AdventFileSystem, commands: List<String>) {
+            commands.forEach { cmd ->
+
+                when (cmd[0]) {
+                    '$' -> {
+                        val parts = cmd.drop(2).split(' ')
+                        when (parts[0]) {
+                            "ls" -> {
+
+                            }
+
+                            "cd" -> fs.cd(parts[1])
+                        }
+                    }
+
+                    else -> {
+                        val parts = cmd.split(' ')
+                        when (parts[0]) {
+                            "dir" -> fs.addFolder(parts[1])
+                            else -> fs.addFile(parts[1], parts[0].toInt())
+                        }
+                    }
+                }
+            }
+        }
 
         @JvmStatic
         fun main(args: Array<String>) {
@@ -70,6 +148,6 @@ class TestDay07 {
 
         Assert.assertEquals(95437, Day07.part1(AdventFileSystem(), input))
 
-        //Assert.assertEquals(19, Day07.part2(AdventFileSystem(), input))
+        Assert.assertEquals(24933642, Day07.part2(AdventFileSystem(), input))
     }
 }
